@@ -1,0 +1,102 @@
+[
+  {
+    "id": "seed-1",
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0345339681-M.jpg",
+    "genre": "Fantasy",
+    "status": "read",
+    "rating": 5,
+    "pages": 310,
+    "currentPage": 310,
+    "notes": "A cozy, perfect adventure story.",
+    "dateAdded": "2026-01-04",
+    "dateStarted": "2026-01-05",
+    "dateFinished": "2026-01-20"
+  },
+  {
+    "id": "seed-2",
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0441172717-M.jpg",
+    "genre": "Science Fiction",
+    "status": "reading",
+    "pages": 412,
+    "currentPage": 180,
+    "notes": "The world-building is incredible.",
+    "dateAdded": "2026-02-10",
+    "dateStarted": "2026-02-12"
+  },
+  {
+    "id": "seed-3",
+    "title": "Project Hail Mary",
+    "author": "Andy Weir",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0593135202-M.jpg",
+    "genre": "Science Fiction",
+    "status": "want-to-read",
+    "pages": 496,
+    "dateAdded": "2026-03-01"
+  },
+  {
+    "id": "seed-4",
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0062316095-M.jpg",
+    "genre": "Non-Fiction",
+    "status": "read",
+    "rating": 4,
+    "pages": 443,
+    "currentPage": 443,
+    "notes": "Made me rethink a lot of assumptions about history.",
+    "dateAdded": "2025-11-15",
+    "dateStarted": "2025-11-20",
+    "dateFinished": "2025-12-10"
+  },
+  {
+    "id": "seed-5",
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0756404746-M.jpg",
+    "genre": "Fantasy",
+    "status": "want-to-read",
+    "pages": 662,
+    "dateAdded": "2026-03-15"
+  },
+  {
+    "id": "seed-6",
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0735211299-M.jpg",
+    "genre": "Self-Help",
+    "status": "read",
+    "rating": 4,
+    "pages": 320,
+    "currentPage": 320,
+    "notes": "Practical and easy to apply.",
+    "dateAdded": "2026-01-25",
+    "dateStarted": "2026-01-26",
+    "dateFinished": "2026-02-05"
+  },
+  {
+    "id": "seed-7",
+    "title": "Klara and the Sun",
+    "author": "Kazuo Ishiguro",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0571364886-M.jpg",
+    "genre": "Literary Fiction",
+    "status": "reading",
+    "pages": 303,
+    "currentPage": 90,
+    "dateAdded": "2026-03-20",
+    "dateStarted": "2026-03-22"
+  },
+  {
+    "id": "seed-8",
+    "title": "A Brief History of Time",
+    "author": "Stephen Hawking",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/0553380168-M.jpg",
+    "genre": "Science",
+    "status": "want-to-read",
+    "pages": 256,
+    "dateAdded": "2026-04-02"
+  }
+]
