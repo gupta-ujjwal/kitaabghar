@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import type { Book } from '../types/book'
+import type { Profile } from '../types/profile'
 import { downloadJson } from '../utils/download'
 import type { StreakInfo } from '../utils/streak'
 import { AnimatedNumber } from './ui/AnimatedNumber'
 
 interface ProfileViewProps {
+  profile: Profile
+  onUpdateProfile: (updates: Partial<Profile>) => void
   books: Book[]
   streak: StreakInfo
   onDeleteAll: () => void
 }
+
+const fieldClass =
+  'rounded-lg border border-[var(--color-line)] bg-[var(--color-paper)] px-3 py-2 focus:border-[var(--color-accent)] focus:outline-none'
 
 function StatTile({ label, value }: { label: string; value: number }) {
   return (
@@ -23,9 +29,21 @@ function StatTile({ label, value }: { label: string; value: number }) {
 
 const CONFIRM_PHRASE = 'DELETE'
 
-export function ProfileView({ books, streak, onDeleteAll }: ProfileViewProps) {
+export function ProfileView({ profile, onUpdateProfile, books, streak, onDeleteAll }: ProfileViewProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmText, setConfirmText] = useState('')
+
+  const [name, setName] = useState(profile.name)
+  const [favoriteGenre, setFavoriteGenre] = useState(profile.favoriteGenre ?? '')
+  const [bio, setBio] = useState(profile.bio ?? '')
+  const [syncedProfile, setSyncedProfile] = useState(profile)
+
+  if (syncedProfile !== profile) {
+    setSyncedProfile(profile)
+    setName(profile.name)
+    setFavoriteGenre(profile.favoriteGenre ?? '')
+    setBio(profile.bio ?? '')
+  }
 
   const readCount = books.filter((b) => b.status === 'read').length
   const readingCount = books.filter((b) => b.status === 'reading').length
@@ -45,6 +63,50 @@ export function ProfileView({ books, streak, onDeleteAll }: ProfileViewProps) {
       <div>
         <h1 className="text-2xl font-bold sm:text-3xl">Profile</h1>
         <p className="mt-1 text-[var(--color-ink-soft)]">Your library, at a glance.</p>
+      </div>
+
+      <div className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-5">
+        <h2 className="text-lg font-semibold">About you</h2>
+        <p className="mt-1 text-sm text-[var(--color-ink-soft)]">
+          A few details that personalize Kitaabghar — saved locally in this browser.
+        </p>
+        <div className="mt-4 flex flex-col gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 text-sm">
+              Display name
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => onUpdateProfile({ name: name.trim() })}
+                placeholder="Your name"
+                className={fieldClass}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              Favorite genre
+              <input
+                type="text"
+                value={favoriteGenre}
+                onChange={(e) => setFavoriteGenre(e.target.value)}
+                onBlur={() => onUpdateProfile({ favoriteGenre: favoriteGenre.trim() || undefined })}
+                placeholder="e.g. Science fiction"
+                className={fieldClass}
+              />
+            </label>
+          </div>
+          <label className="flex flex-col gap-1 text-sm">
+            Bio
+            <textarea
+              rows={3}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              onBlur={() => onUpdateProfile({ bio: bio.trim() || undefined })}
+              placeholder="A little about your reading taste…"
+              className={`resize-none ${fieldClass}`}
+            />
+          </label>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -73,8 +135,8 @@ export function ProfileView({ books, streak, onDeleteAll }: ProfileViewProps) {
       <div className="rounded-2xl border border-[var(--color-destructive)]/40 bg-[var(--color-destructive-soft)] p-5">
         <h2 className="text-lg font-semibold text-[var(--color-destructive)]">Danger zone</h2>
         <p className="mt-1 text-sm text-[var(--color-ink-soft)]">
-          Permanently delete every book, your reading streak, and your yearly goal from this
-          browser. This can't be undone.
+          Permanently delete every book, your reading streak, your yearly goal, and your
+          profile from this browser. This can't be undone.
         </p>
         <button
           type="button"

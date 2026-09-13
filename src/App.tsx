@@ -12,6 +12,7 @@ import { ProfileView } from './components/ProfileView'
 import { WrappedView } from './components/WrappedView'
 import { useActivityLog } from './hooks/useActivityLog'
 import { useBooks } from './hooks/useBooks'
+import { useProfile } from './hooks/useProfile'
 import { useReadingGoal } from './hooks/useReadingGoal'
 import type { Book, ReadingStatus } from './types/book'
 
@@ -22,6 +23,7 @@ function App() {
   const { books, addBook, updateBook, deleteBook, importBooks, clearBooks, loaded: booksLoaded } = useBooks()
   const { streak, logActivity, clearActivity, loaded: activityLoaded } = useActivityLog()
   const { goal, setTarget, resetGoal, loaded: goalLoaded } = useReadingGoal()
+  const { profile, updateProfile, clearProfile, loaded: profileLoaded } = useProfile()
 
   const [view, setView] = useState<View>('home')
   const [libraryView, setLibraryView] = useState<LibraryView>('cards')
@@ -155,10 +157,11 @@ function App() {
     clearBooks()
     clearActivity()
     resetGoal()
+    clearProfile()
     setView('home')
   }
 
-  if (!booksLoaded || !activityLoaded || !goalLoaded) {
+  if (!booksLoaded || !activityLoaded || !goalLoaded || !profileLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-[var(--color-ink-soft)]">Loading your library…</p>
@@ -175,6 +178,7 @@ function App() {
           <EmptyLibrary onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
         ) : view === 'home' ? (
           <HomeHero
+            profile={profile}
             books={books}
             streakCurrent={streak.current}
             goalCompleted={goalCompleted}
@@ -219,9 +223,15 @@ function App() {
             )}
           </>
         ) : view === 'wrapped' ? (
-          <WrappedView books={books} streak={streak} />
+          <WrappedView profile={profile} books={books} streak={streak} />
         ) : (
-          <ProfileView books={books} streak={streak} onDeleteAll={handleDeleteAll} />
+          <ProfileView
+            profile={profile}
+            onUpdateProfile={updateProfile}
+            books={books}
+            streak={streak}
+            onDeleteAll={handleDeleteAll}
+          />
         )}
       </main>
 
