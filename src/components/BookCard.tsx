@@ -9,15 +9,16 @@ interface BookCardProps {
   book: Book
   onClick: () => void
   actions: StatusActions
+  eager?: boolean
 }
 
-export function BookCard({ book, onClick, actions }: BookCardProps) {
+export function BookCard({ book, onClick, actions, eager = false }: BookCardProps) {
   return (
     <TiltCard rotateAmplitude={6} scaleOnHover={1.02}>
       <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] shadow-[0_1px_2px_rgba(20,20,25,0.06)] transition-shadow hover:shadow-[0_16px_28px_-14px_rgba(20,20,25,0.25)]">
         <button type="button" onClick={onClick} className="flex flex-col text-left">
           <div className="flex aspect-[2/3] items-center justify-center overflow-hidden bg-[var(--color-paper)]">
-            <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-sm" />
+            <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-sm" eager={eager} />
           </div>
 
           <div className="flex flex-col gap-1.5 p-3 pb-0">

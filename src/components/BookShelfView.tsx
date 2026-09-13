@@ -1,5 +1,5 @@
 import type { Book, ReadingStatus } from '../types/book'
-import { BookCover } from './BookCover'
+import { BookCover, EAGER_COVER_COUNT } from './BookCover'
 
 const STATUS_DOT: Record<ReadingStatus, string> = {
   'want-to-read': 'var(--color-amber)',
@@ -52,7 +52,7 @@ export function BookShelfView({ books, onSelectBook }: BookShelfViewProps) {
         backgroundPosition: 'top left',
       }}
     >
-      {books.map((book) => {
+      {books.map((book, index) => {
         const tilt = tiltFor(book.id)
         return (
           <button
@@ -81,6 +81,7 @@ export function BookShelfView({ books, onSelectBook }: BookShelfViewProps) {
                 title={book.title}
                 coverUrl={book.coverUrl}
                 titleClassName="text-[9px] leading-tight"
+                eager={index < EAGER_COVER_COUNT}
               />
 
               {/* spine binding shadow */}
