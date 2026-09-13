@@ -1,5 +1,6 @@
 import type { Book, StatusActions } from '../types/book'
 import { BookCard } from './BookCard'
+import { EAGER_COVER_COUNT } from './BookCover'
 
 interface BookGridProps {
   books: Book[]
@@ -20,8 +21,14 @@ export function BookGrid({ books, onSelectBook, actions }: BookGridProps) {
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-      {books.map((book) => (
-        <BookCard key={book.id} book={book} onClick={() => onSelectBook(book)} actions={actions} />
+      {books.map((book, index) => (
+        <BookCard
+          key={book.id}
+          book={book}
+          onClick={() => onSelectBook(book)}
+          actions={actions}
+          eager={index < EAGER_COVER_COUNT}
+        />
       ))}
     </div>
   )

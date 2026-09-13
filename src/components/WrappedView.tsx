@@ -39,7 +39,7 @@ function HighlightCard({
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-4">
       <div className="h-20 w-14 shrink-0 overflow-hidden rounded bg-[var(--color-paper)]">
-        <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-[8px] leading-tight" />
+        <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-[8px] leading-tight" eager />
       </div>
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent)]">{label}</p>

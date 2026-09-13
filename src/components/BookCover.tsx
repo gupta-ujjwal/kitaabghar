@@ -1,10 +1,14 @@
 import { useState } from 'react'
 
+/** How many leading covers in large lists render eagerly; the rest lazy-load on scroll. */
+export const EAGER_COVER_COUNT = 8
+
 interface BookCoverProps {
   id: string
   title: string
   coverUrl?: string
   titleClassName?: string
+  eager?: boolean
 }
 
 const GRADIENTS = [
@@ -25,7 +29,7 @@ function gradientFor(seed: string): string {
   return GRADIENTS[Math.abs(hash) % GRADIENTS.length]
 }
 
-export function BookCover({ id, title, coverUrl, titleClassName = 'text-xs' }: BookCoverProps) {
+export function BookCover({ id, title, coverUrl, titleClassName = 'text-xs', eager = false }: BookCoverProps) {
   const [failed, setFailed] = useState(false)
 
   if (coverUrl && !failed) {
@@ -34,7 +38,8 @@ export function BookCover({ id, title, coverUrl, titleClassName = 'text-xs' }: B
         src={coverUrl}
         alt={`Cover of ${title}`}
         className="h-full w-full object-cover"
-        loading="lazy"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
         onError={() => setFailed(true)}
       />
     )

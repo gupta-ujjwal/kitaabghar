@@ -53,7 +53,7 @@ export function HomeHero({
               onClick={() => onOpenBook(hero)}
               className="aspect-[2/3] w-full self-start overflow-hidden rounded-2xl bg-[var(--color-accent-soft)] shadow-[0_16px_28px_-14px_rgba(53,86,232,0.4)]"
             >
-              <BookCover id={hero.id} title={hero.title} coverUrl={hero.coverUrl} titleClassName="text-sm" />
+              <BookCover id={hero.id} title={hero.title} coverUrl={hero.coverUrl} titleClassName="text-sm" eager />
             </button>
 
             <div className="min-w-0">
@@ -130,7 +130,7 @@ export function HomeHero({
               <div key={book.id} className="flex flex-col gap-2">
                 <button type="button" onClick={() => onOpenBook(book)} className="text-left">
                   <div className="aspect-[3/4] overflow-hidden rounded-2xl bg-[var(--color-line)] shadow-[0_10px_20px_-14px_rgba(20,20,25,0.35)]">
-                    <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} />
+                    <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} eager />
                   </div>
                   <p className="mt-2 truncate text-sm font-semibold">{book.title}</p>
                   <p className="truncate text-xs text-[var(--color-ink-soft)]">
