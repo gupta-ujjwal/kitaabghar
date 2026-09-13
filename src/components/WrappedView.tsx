@@ -2,6 +2,7 @@ import type { Book } from '../types/book'
 import { computeAchievements } from '../utils/achievements'
 import type { StreakInfo } from '../utils/streak'
 import { AchievementsShelf } from './AchievementsShelf'
+import { BookCover } from './BookCover'
 import { AnimatedNumber } from './ui/AnimatedNumber'
 import SplitText from './ui/SplitText'
 
@@ -38,9 +39,7 @@ function HighlightCard({
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-4">
       <div className="h-20 w-14 shrink-0 overflow-hidden rounded bg-[var(--color-paper)]">
-        {book.coverUrl ? (
-          <img src={book.coverUrl} alt="" className="h-full w-full object-cover" />
-        ) : null}
+        <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-[8px] leading-tight" />
       </div>
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent)]">{label}</p>

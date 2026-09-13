@@ -1,4 +1,5 @@
 import type { Book, ReadingStatus } from '../types/book'
+import { BookCover } from './BookCover'
 
 const STATUS_DOT: Record<ReadingStatus, string> = {
   'want-to-read': 'var(--color-amber)',
@@ -75,21 +76,12 @@ export function BookShelfView({ books, onSelectBook }: BookShelfViewProps) {
                   '0 12px 16px -10px rgba(20,20,25,0.45), inset 3px 0 0 rgba(0,0,0,0.18), inset -2px 0 3px rgba(0,0,0,0.12)',
               }}
             >
-              {book.coverUrl ? (
-                <img
-                  src={book.coverUrl}
-                  alt={`Cover of ${book.title}`}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
-              ) : (
-                <span className="flex h-full w-full items-center justify-center px-1 text-center text-[11px] text-[var(--color-ink-soft)]">
-                  {book.title}
-                </span>
-              )}
+              <BookCover
+                id={book.id}
+                title={book.title}
+                coverUrl={book.coverUrl}
+                titleClassName="text-[9px] leading-tight"
+              />
 
               {/* spine binding shadow */}
               <div

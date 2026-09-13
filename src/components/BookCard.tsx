@@ -1,4 +1,5 @@
 import type { Book, StatusActions } from '../types/book'
+import { BookCover } from './BookCover'
 import { BookQuickActions } from './BookQuickActions'
 import { StarRating } from './StarRating'
 import { StatusBadge } from './StatusBadge'
@@ -16,21 +17,7 @@ export function BookCard({ book, onClick, actions }: BookCardProps) {
       <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] shadow-[0_1px_2px_rgba(20,20,25,0.06)] transition-shadow hover:shadow-[0_16px_28px_-14px_rgba(20,20,25,0.25)]">
         <button type="button" onClick={onClick} className="flex flex-col text-left">
           <div className="flex aspect-[2/3] items-center justify-center overflow-hidden bg-[var(--color-paper)]">
-            {book.coverUrl ? (
-              <img
-                src={book.coverUrl}
-                alt={`Cover of ${book.title}`}
-                className="h-full w-full object-cover"
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
-            ) : (
-              <span className="px-2 text-center text-sm text-[var(--color-ink-soft)]">
-                {book.title}
-              </span>
-            )}
+            <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} titleClassName="text-sm" />
           </div>
 
           <div className="flex flex-col gap-1.5 p-3 pb-0">
