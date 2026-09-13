@@ -5,6 +5,7 @@ import { BookShelfView } from './components/BookShelfView'
 import { Confetti } from './components/Confetti'
 import { FilterBar } from './components/FilterBar'
 import { Header } from './components/Header'
+import { EmptyLibrary } from './components/home/EmptyLibrary'
 import { HomeHero } from './components/home/HomeHero'
 import { ImportModal } from './components/ImportModal'
 import { WrappedView } from './components/WrappedView'
@@ -154,7 +155,9 @@ function App() {
       <Header view={view} onViewChange={setView} onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
 
       <main className="mx-auto max-w-5xl px-4 py-8">
-        {view === 'home' ? (
+        {view === 'home' && books.length === 0 ? (
+          <EmptyLibrary onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
+        ) : view === 'home' ? (
           <HomeHero
             books={books}
             streakCurrent={streak.current}

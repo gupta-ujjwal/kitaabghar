@@ -1,4 +1,3 @@
-import seedBooks from '../data/seedBooks.json'
 import type { Book } from '../types/book'
 import { generateId } from '../utils/id'
 import { useLocalStorage } from './useLocalStorage'
@@ -6,10 +5,7 @@ import { useLocalStorage } from './useLocalStorage'
 const STORAGE_KEY = 'kitaabghar:books'
 
 export function useBooks() {
-  const [books, setBooks] = useLocalStorage<Book[]>(
-    STORAGE_KEY,
-    seedBooks as Book[],
-  )
+  const [books, setBooks] = useLocalStorage<Book[]>(STORAGE_KEY, [])
 
   function addBook(book: Omit<Book, 'id' | 'dateAdded'>) {
     const newBook: Book = {
