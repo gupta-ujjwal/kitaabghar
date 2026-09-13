@@ -173,7 +173,7 @@ function App() {
     <div className="min-h-screen">
       <Header view={view} onViewChange={setView} onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-8 pb-24 sm:pb-8">
         {view === 'home' && books.length === 0 ? (
           <EmptyLibrary onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
         ) : view === 'home' ? (
@@ -235,7 +235,7 @@ function App() {
         )}
       </main>
 
-      <footer className="mx-auto max-w-5xl px-4 pb-8 text-center text-xs text-[var(--color-ink-soft)]">
+      <footer className="mx-auto mb-[calc(5rem_+_env(safe-area-inset-bottom))] max-w-5xl px-4 pb-8 text-center text-xs text-[var(--color-ink-soft)] sm:mb-0">
         Built with{' '}
         <a href="https://reactbits.dev" className="underline" target="_blank" rel="noreferrer">
           React Bits
