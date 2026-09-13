@@ -1,4 +1,4 @@
-# Virtual Library
+# Kitaabghar
 
 A personal reading tracker — track books you want to read, are reading, or
 have finished, with ratings, progress, and notes. All data is stored locally

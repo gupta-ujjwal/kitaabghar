@@ -1,15 +1,16 @@
 import type { ReadingStatus } from '../types/book'
 
 const STYLES: Record<ReadingStatus, string> = {
-  'want-to-read':
-    'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
-  reading: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300',
-  read: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+  'want-to-read': 'bg-[var(--color-amber-soft)] text-[var(--color-amber)]',
+  reading: 'bg-[var(--color-accent-soft)] text-[var(--color-accent)]',
+  paused: 'bg-[var(--color-line)] text-[var(--color-ink-soft)]',
+  read: 'bg-[var(--color-green-soft)] text-[var(--color-green)]',
 }
 
 const LABELS: Record<ReadingStatus, string> = {
   'want-to-read': 'Want to Read',
   reading: 'Reading',
+  paused: 'Paused',
   read: 'Read',
 }
 

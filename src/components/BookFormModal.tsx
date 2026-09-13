@@ -17,9 +17,11 @@ const EMPTY_FORM = {
   status: 'want-to-read' as ReadingStatus,
   rating: 0,
   pages: undefined as number | undefined,
-  currentPage: undefined as number | undefined,
   notes: '',
 }
+
+const fieldClass =
+  'rounded-lg border border-[var(--color-line)] bg-[var(--color-paper)] px-3 py-2 focus:border-[var(--color-accent)] focus:outline-none'
 
 export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModalProps) {
   const [form, setForm] = useState(EMPTY_FORM)
@@ -35,7 +37,6 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
         status: book.status,
         rating: book.rating ?? 0,
         pages: book.pages,
-        currentPage: book.currentPage,
         notes: book.notes ?? '',
       })
     } else {
@@ -56,7 +57,6 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
       status: form.status,
       rating: form.status === 'read' && form.rating > 0 ? form.rating : undefined,
       pages: form.pages,
-      currentPage: form.status === 'reading' ? form.currentPage : undefined,
       notes: form.notes.trim() || undefined,
       dateStarted: book?.dateStarted,
       dateFinished: book?.dateFinished,
@@ -65,35 +65,33 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-ink)]/40 p-4 backdrop-blur-[2px]"
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 dark:bg-gray-900"
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] shadow-[0_20px_50px_rgba(20,20,25,0.25)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            {book ? 'Edit Book' : 'Add Book'}
-          </h2>
+        <div className="flex items-center justify-between border-b border-[var(--color-line)] px-6 py-4">
+          <p className="text-base font-semibold">{book ? 'Edit Book' : 'Add Book'}</p>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            className="text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
             aria-label="Close"
           >
             ✕
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-6">
           <label className="flex flex-col gap-1 text-sm">
             Title
             <input
               required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+              className={fieldClass}
             />
           </label>
 
@@ -103,7 +101,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               required
               value={form.author}
               onChange={(e) => setForm({ ...form, author: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+              className={fieldClass}
             />
           </label>
 
@@ -113,7 +111,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               value={form.coverUrl}
               onChange={(e) => setForm({ ...form, coverUrl: e.target.value })}
               placeholder="https://…"
-              className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+              className={fieldClass}
             />
           </label>
 
@@ -123,7 +121,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               <input
                 value={form.genre}
                 onChange={(e) => setForm({ ...form, genre: e.target.value })}
-                className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+                className={fieldClass}
               />
             </label>
 
@@ -134,7 +132,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
                 onChange={(e) =>
                   setForm({ ...form, status: e.target.value as ReadingStatus })
                 }
-                className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+                className={fieldClass}
               >
                 {READING_STATUSES.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -145,42 +143,21 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
             </label>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Total pages
-              <input
-                type="number"
-                min={0}
-                value={form.pages ?? ''}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    pages: e.target.value ? Number(e.target.value) : undefined,
-                  })
-                }
-                className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
-              />
-            </label>
-
-            {form.status === 'reading' ? (
-              <label className="flex flex-col gap-1 text-sm">
-                Current page
-                <input
-                  type="number"
-                  min={0}
-                  max={form.pages}
-                  value={form.currentPage ?? ''}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      currentPage: e.target.value ? Number(e.target.value) : undefined,
-                    })
-                  }
-                  className="rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
-                />
-              </label>
-            ) : null}
-          </div>
+          <label className="flex flex-col gap-1 text-sm">
+            Total pages
+            <input
+              type="number"
+              min={0}
+              value={form.pages ?? ''}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  pages: e.target.value ? Number(e.target.value) : undefined,
+                })
+              }
+              className={fieldClass}
+            />
+          </label>
 
           {form.status === 'read' ? (
             <div className="flex flex-col gap-1 text-sm">
@@ -198,26 +175,26 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               rows={3}
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              className="resize-none rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+              className={`resize-none ${fieldClass}`}
             />
           </label>
 
-          <div className="mt-2 flex items-center justify-between gap-3">
+          <div className="mt-2 flex items-center justify-between gap-3 border-t border-[var(--color-line)] pt-4">
             {book ? (
               confirmingDelete ? (
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Delete this book?</span>
+                  <span className="text-[var(--color-ink-soft)]">Delete this book?</span>
                   <button
                     type="button"
                     onClick={() => onDelete(book.id)}
-                    className="rounded-lg bg-red-600 px-3 py-1.5 font-medium text-white hover:bg-red-500"
+                    className="rounded-lg bg-[var(--color-destructive)] px-3 py-1.5 font-medium text-white hover:opacity-90"
                   >
                     Confirm
                   </button>
                   <button
                     type="button"
                     onClick={() => setConfirmingDelete(false)}
-                    className="rounded-lg px-3 py-1.5 font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    className="rounded-lg px-3 py-1.5 font-medium text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
                   >
                     Cancel
                   </button>
@@ -226,7 +203,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
                 <button
                   type="button"
                   onClick={() => setConfirmingDelete(true)}
-                  className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
+                  className="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-destructive)] hover:bg-[var(--color-destructive-soft)]"
                 >
                   Delete
                 </button>
@@ -237,7 +214,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
 
             <button
               type="submit"
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+              className="rounded-full bg-[var(--color-accent)] px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               {book ? 'Save Changes' : 'Add Book'}
             </button>

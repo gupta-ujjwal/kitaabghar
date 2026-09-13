@@ -1,14 +1,77 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Onest', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-paper: #f4f4f6;
+  --color-paper-raised: #ffffff;
+  --color-ink: #151517;
+  --color-ink-soft: #78787e;
+  --color-line: #e4e4e8;
+
+  --color-accent: #3556e8;
+  --color-accent-soft: #e7ebfc;
+  --color-amber: #c98a4f;
+  --color-amber-soft: #f6ead9;
+  --color-green: #2f9e6f;
+  --color-green-soft: #e1f3ea;
+  --color-star: #f5a623;
+  --color-destructive: #d64545;
+  --color-destructive-soft: #fbe7e7;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #131316;
+    --color-paper-raised: #1c1c20;
+    --color-ink: #f2f2f4;
+    --color-ink-soft: #97979e;
+    --color-line: #2b2b30;
+
+    --color-accent: #7089f5;
+    --color-accent-soft: #202a4a;
+    --color-amber: #dba677;
+    --color-amber-soft: #362a1c;
+    --color-green: #6cc79f;
+    --color-green-soft: #1c3128;
+    --color-star: #f5b84f;
+    --color-destructive: #e97575;
+    --color-destructive-soft: #3a2224;
+  }
 }
 
 html {
-  color-scheme: light dark;
+  font-family: var(--font-sans);
 }
 
 body {
   margin: 0;
-  @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+/* Confetti burst — see src/components/Confetti.tsx */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(var(--fall-distance, 220px)) rotate(var(--spin, 320deg));
+    opacity: 0;
+  }
 }

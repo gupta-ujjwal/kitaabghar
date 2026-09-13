@@ -3,7 +3,7 @@ import type { Book } from '../types/book'
 import { generateId } from '../utils/id'
 import { useLocalStorage } from './useLocalStorage'
 
-const STORAGE_KEY = 'virtual-library:books'
+const STORAGE_KEY = 'kitaabghar:books'
 
 export function useBooks() {
   const [books, setBooks] = useLocalStorage<Book[]>(
@@ -30,5 +30,9 @@ export function useBooks() {
     setBooks((prev) => prev.filter((book) => book.id !== id))
   }
 
-  return { books, addBook, updateBook, deleteBook }
+  function importBooks(newBooks: Book[]) {
+    setBooks((prev) => [...newBooks, ...prev])
+  }
+
+  return { books, addBook, updateBook, deleteBook, importBooks }
 }

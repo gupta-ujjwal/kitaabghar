@@ -26,13 +26,13 @@ export function FilterBar({
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search by title or author…"
-        className="min-w-48 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+        className="min-w-48 flex-1 rounded-full border border-[var(--color-line)] bg-[var(--color-paper-raised)] px-4 py-2 text-sm placeholder:text-[var(--color-ink-soft)] focus:border-[var(--color-accent)] focus:outline-none"
       />
 
       <select
         value={status}
         onChange={(e) => onStatusChange(e.target.value as ReadingStatus | 'all')}
-        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+        className="rounded-full border border-[var(--color-line)] bg-[var(--color-paper-raised)] px-4 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none"
       >
         <option value="all">All statuses</option>
         {READING_STATUSES.map((s) => (
@@ -45,7 +45,7 @@ export function FilterBar({
       <select
         value={genre}
         onChange={(e) => onGenreChange(e.target.value)}
-        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+        className="rounded-full border border-[var(--color-line)] bg-[var(--color-paper-raised)] px-4 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none"
       >
         <option value="all">All genres</option>
         {genres.map((g) => (

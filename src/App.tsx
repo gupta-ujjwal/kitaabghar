@@ -1,21 +1,48 @@
 import { useMemo, useState } from 'react'
 import { BookFormModal } from './components/BookFormModal'
 import { BookGrid } from './components/BookGrid'
+import { BookShelfView } from './components/BookShelfView'
+import { Confetti } from './components/Confetti'
 import { FilterBar } from './components/FilterBar'
 import { Header } from './components/Header'
-import { StatsPanel } from './components/StatsPanel'
+import { HomeHero } from './components/home/HomeHero'
+import { ImportModal } from './components/ImportModal'
+import { WrappedView } from './components/WrappedView'
+import { useActivityLog } from './hooks/useActivityLog'
 import { useBooks } from './hooks/useBooks'
+import { useReadingGoal } from './hooks/useReadingGoal'
 import type { Book, ReadingStatus } from './types/book'
 
+type View = 'home' | 'library' | 'wrapped'
+type LibraryView = 'cards' | 'shelf'
+
 function App() {
-  const { books, addBook, updateBook, deleteBook } = useBooks()
-  const [view, setView] = useState<'library' | 'stats'>('library')
+  const { books, addBook, updateBook, deleteBook, importBooks } = useBooks()
+  const { streak, logActivity } = useActivityLog()
+  const { goal, setTarget } = useReadingGoal()
+
+  const [view, setView] = useState<View>('home')
+  const [libraryView, setLibraryView] = useState<LibraryView>('cards')
   const [modalOpen, setModalOpen] = useState(false)
+  const [importModalOpen, setImportModalOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<Book | null>(null)
+  const [celebrating, setCelebrating] = useState(false)
 
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<ReadingStatus | 'all'>('all')
   const [genreFilter, setGenreFilter] = useState('all')
+
+  const currentYear = new Date().getFullYear()
+  const goalCompleted = useMemo(
+    () =>
+      books.filter(
+        (b) =>
+          b.status === 'read' &&
+          b.dateFinished &&
+          new Date(b.dateFinished).getFullYear() === currentYear,
+      ).length,
+    [books, currentYear],
+  )
 
   const genres = useMemo(
     () => Array.from(new Set(books.map((b) => b.genre).filter(Boolean))) as string[],
@@ -34,6 +61,11 @@ function App() {
       return matchesSearch && matchesStatus && matchesGenre
     })
   }, [books, search, statusFilter, genreFilter])
+
+  function celebrate() {
+    setCelebrating(true)
+    window.setTimeout(() => setCelebrating(false), 1400)
+  }
 
   function openAddModal() {
     setEditingBook(null)
@@ -66,11 +98,15 @@ function App() {
             : formValues.dateFinished,
     }
 
+    const justFinished = formValues.status === 'read' && editingBook?.status !== 'read'
+
     if (editingBook) {
       updateBook(editingBook.id, withDates)
     } else {
       addBook(withDates)
     }
+    logActivity()
+    if (justFinished) celebrate()
     closeModal()
   }
 
@@ -79,12 +115,56 @@ function App() {
     closeModal()
   }
 
+  function handleImport(imported: Book[]) {
+    importBooks(imported)
+    logActivity()
+  }
+
+  function handleStart(bookId: string) {
+    const book = books.find((b) => b.id === bookId)
+    if (!book) return
+    const today = new Date().toISOString().slice(0, 10)
+    updateBook(bookId, { status: 'reading', dateStarted: book.dateStarted ?? today })
+    logActivity()
+  }
+
+  function handlePause(bookId: string) {
+    updateBook(bookId, { status: 'paused' })
+    logActivity()
+  }
+
+  function handleResume(bookId: string) {
+    updateBook(bookId, { status: 'reading' })
+    logActivity()
+  }
+
+  function handleFinish(bookId: string) {
+    const book = books.find((b) => b.id === bookId)
+    if (!book) return
+    const today = new Date().toISOString().slice(0, 10)
+    updateBook(bookId, { status: 'read', dateFinished: book.dateFinished ?? today })
+    logActivity()
+    celebrate()
+  }
+
+  const statusActions = { onStart: handleStart, onPause: handlePause, onResume: handleResume, onFinish: handleFinish }
+
   return (
     <div className="min-h-screen">
-      <Header view={view} onViewChange={setView} onAddBook={openAddModal} />
+      <Header view={view} onViewChange={setView} onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
 
-      <main className="mx-auto max-w-5xl px-4 py-6">
-        {view === 'library' ? (
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        {view === 'home' ? (
+          <HomeHero
+            books={books}
+            streakCurrent={streak.current}
+            goalCompleted={goalCompleted}
+            goalTarget={goal.target}
+            onChangeGoalTarget={setTarget}
+            onOpenBook={openEditModal}
+            actions={statusActions}
+          />
+        ) : view === 'library' ? (
           <>
             <FilterBar
               search={search}
@@ -95,12 +175,45 @@ function App() {
               onGenreChange={setGenreFilter}
               genres={genres}
             />
-            <BookGrid books={filteredBooks} onSelectBook={openEditModal} />
+            <div className="mb-4 flex justify-end">
+              <div className="inline-flex rounded-full border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-1 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setLibraryView('cards')}
+                  className={`rounded-full px-3 py-1 ${libraryView === 'cards' ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-ink-soft)]'}`}
+                >
+                  Cards
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLibraryView('shelf')}
+                  className={`rounded-full px-3 py-1 ${libraryView === 'shelf' ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-ink-soft)]'}`}
+                >
+                  Shelf
+                </button>
+              </div>
+            </div>
+            {libraryView === 'cards' ? (
+              <BookGrid books={filteredBooks} onSelectBook={openEditModal} actions={statusActions} />
+            ) : (
+              <BookShelfView books={filteredBooks} onSelectBook={openEditModal} />
+            )}
           </>
         ) : (
-          <StatsPanel books={books} />
+          <WrappedView books={books} streak={streak} />
         )}
       </main>
+
+      <footer className="mx-auto max-w-5xl px-4 pb-8 text-center text-xs text-[var(--color-ink-soft)]">
+        Built with{' '}
+        <a href="https://reactbits.dev" className="underline" target="_blank" rel="noreferrer">
+          React Bits
+        </a>{' '}
+        &{' '}
+        <a href="https://skiper-ui.com" className="underline" target="_blank" rel="noreferrer">
+          Skiper UI
+        </a>
+      </footer>
 
       {modalOpen ? (
         <BookFormModal
@@ -110,6 +223,12 @@ function App() {
           onClose={closeModal}
         />
       ) : null}
+
+      {importModalOpen ? (
+        <ImportModal onImport={handleImport} onClose={() => setImportModalOpen(false)} />
+      ) : null}
+
+      {celebrating ? <Confetti /> : null}
     </div>
   )
 }

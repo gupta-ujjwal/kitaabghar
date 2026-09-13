@@ -1,67 +1,59 @@
-import type { Book } from '../types/book'
+import type { Book, StatusActions } from '../types/book'
+import { BookQuickActions } from './BookQuickActions'
 import { StarRating } from './StarRating'
 import { StatusBadge } from './StatusBadge'
+import { TiltCard } from './ui/TiltCard'
 
 interface BookCardProps {
   book: Book
   onClick: () => void
+  actions: StatusActions
 }
 
-export function BookCard({ book, onClick }: BookCardProps) {
-  const progress =
-    book.status === 'reading' && book.pages && book.currentPage
-      ? Math.round((book.currentPage / book.pages) * 100)
-      : null
-
+export function BookCard({ book, onClick, actions }: BookCardProps) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-left transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-    >
-      <div className="flex aspect-[2/3] items-center justify-center overflow-hidden bg-gray-100 dark:bg-gray-800">
-        {book.coverUrl ? (
-          <img
-            src={book.coverUrl}
-            alt={`Cover of ${book.title}`}
-            className="h-full w-full object-cover"
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
-          />
-        ) : (
-          <span className="px-2 text-center text-sm text-gray-400">
-            {book.title}
-          </span>
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <StatusBadge status={book.status} />
-        <h3 className="line-clamp-2 font-medium text-gray-900 dark:text-white">
-          {book.title}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {book.author}
-        </p>
-
-        {book.status === 'read' && book.rating ? (
-          <StarRating rating={book.rating} readOnly />
-        ) : null}
-
-        {progress !== null ? (
-          <div className="mt-auto pt-1">
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-              <div
-                className="h-full rounded-full bg-blue-500"
-                style={{ width: `${progress}%` }}
+    <TiltCard rotateAmplitude={6} scaleOnHover={1.02}>
+      <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] shadow-[0_1px_2px_rgba(20,20,25,0.06)] transition-shadow hover:shadow-[0_16px_28px_-14px_rgba(20,20,25,0.25)]">
+        <button type="button" onClick={onClick} className="flex flex-col text-left">
+          <div className="flex aspect-[2/3] items-center justify-center overflow-hidden bg-[var(--color-paper)]">
+            {book.coverUrl ? (
+              <img
+                src={book.coverUrl}
+                alt={`Cover of ${book.title}`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
               />
-            </div>
-            <p className="mt-1 text-xs text-gray-400">{progress}% done</p>
+            ) : (
+              <span className="px-2 text-center text-sm text-[var(--color-ink-soft)]">
+                {book.title}
+              </span>
+            )}
           </div>
-        ) : null}
+
+          <div className="flex flex-col gap-1.5 p-3 pb-0">
+            <StatusBadge status={book.status} />
+            <h3 className="line-clamp-2 font-semibold">{book.title}</h3>
+            <p className="text-sm text-[var(--color-ink-soft)]">{book.author}</p>
+
+            {book.status === 'read' && book.rating ? (
+              <StarRating rating={book.rating} readOnly />
+            ) : null}
+          </div>
+        </button>
+
+        <div className="p-3 pt-2">
+          <BookQuickActions
+            status={book.status}
+            onStart={() => actions.onStart(book.id)}
+            onPause={() => actions.onPause(book.id)}
+            onResume={() => actions.onResume(book.id)}
+            onFinish={() => actions.onFinish(book.id)}
+          />
+        </div>
       </div>
-    </button>
+    </TiltCard>
   )
 }
