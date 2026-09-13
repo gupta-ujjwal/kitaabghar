@@ -1,11 +1,11 @@
 import type { Book } from '../types/book'
 import { generateId } from '../utils/id'
-import { useLocalStorage } from './useLocalStorage'
+import { useIndexedDB } from './useIndexedDB'
 
 const STORAGE_KEY = 'kitaabghar:books'
 
 export function useBooks() {
-  const [books, setBooks] = useLocalStorage<Book[]>(STORAGE_KEY, [])
+  const [books, setBooks, loaded] = useIndexedDB<Book[]>(STORAGE_KEY, [])
 
   function addBook(book: Omit<Book, 'id' | 'dateAdded'>) {
     const newBook: Book = {
@@ -34,5 +34,5 @@ export function useBooks() {
     setBooks([])
   }
 
-  return { books, addBook, updateBook, deleteBook, importBooks, clearBooks }
+  return { books, addBook, updateBook, deleteBook, importBooks, clearBooks, loaded }
 }

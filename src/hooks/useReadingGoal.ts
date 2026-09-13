@@ -1,9 +1,9 @@
-import { useLocalStorage } from './useLocalStorage'
+import { useIndexedDB } from './useIndexedDB'
 
 const currentYear = new Date().getFullYear()
 
 export function useReadingGoal() {
-  const [goal, setGoal] = useLocalStorage(`kitaabghar:goal:${currentYear}`, {
+  const [goal, setGoal, loaded] = useIndexedDB(`kitaabghar:goal:${currentYear}`, {
     year: currentYear,
     target: 24,
   })
@@ -16,5 +16,5 @@ export function useReadingGoal() {
     setGoal({ year: currentYear, target: 24 })
   }
 
-  return { goal, setTarget, resetGoal }
+  return { goal, setTarget, resetGoal, loaded }
 }

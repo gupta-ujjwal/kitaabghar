@@ -19,9 +19,9 @@ type View = 'home' | 'library' | 'wrapped' | 'profile'
 type LibraryView = 'cards' | 'shelf'
 
 function App() {
-  const { books, addBook, updateBook, deleteBook, importBooks, clearBooks } = useBooks()
-  const { streak, logActivity, clearActivity } = useActivityLog()
-  const { goal, setTarget, resetGoal } = useReadingGoal()
+  const { books, addBook, updateBook, deleteBook, importBooks, clearBooks, loaded: booksLoaded } = useBooks()
+  const { streak, logActivity, clearActivity, loaded: activityLoaded } = useActivityLog()
+  const { goal, setTarget, resetGoal, loaded: goalLoaded } = useReadingGoal()
 
   const [view, setView] = useState<View>('home')
   const [libraryView, setLibraryView] = useState<LibraryView>('cards')
@@ -156,6 +156,14 @@ function App() {
     clearActivity()
     resetGoal()
     setView('home')
+  }
+
+  if (!booksLoaded || !activityLoaded || !goalLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-[var(--color-ink-soft)]">Loading your library…</p>
+      </div>
+    )
   }
 
   return (
