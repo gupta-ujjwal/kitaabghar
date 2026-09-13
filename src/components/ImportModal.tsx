@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { IMPORT_OPENAPI_SCHEMA, IMPORT_SAMPLE } from '../data/importSchema'
 import type { Book } from '../types/book'
 import { parseImportFile, type ImportResult } from '../utils/bookImport'
+import { fillMissingCovers } from '../utils/coverLookup'
 import { downloadJson } from '../utils/download'
 
 interface ImportModalProps {
@@ -12,6 +13,8 @@ interface ImportModalProps {
 export function ImportModal({ onImport, onClose }: ImportModalProps) {
   const [text, setText] = useState('')
   const [result, setResult] = useState<ImportResult | null>(null)
+  const [autoFetchCovers, setAutoFetchCovers] = useState(true)
+  const [coverProgress, setCoverProgress] = useState<{ done: number; total: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function handleParse(raw: string) {
@@ -34,9 +37,21 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
     file.text().then(handleParse)
   }
 
-  function handleConfirmImport() {
+  async function handleConfirmImport() {
     if (!result || result.books.length === 0) return
-    onImport(result.books)
+
+    let booksToImport = result.books
+    const missingCovers = booksToImport.filter((b) => !b.coverUrl).length
+
+    if (autoFetchCovers && missingCovers > 0) {
+      setCoverProgress({ done: 0, total: missingCovers })
+      booksToImport = await fillMissingCovers(booksToImport, (done, total) =>
+        setCoverProgress({ done, total }),
+      )
+      setCoverProgress(null)
+    }
+
+    onImport(booksToImport)
     onClose()
   }
 
@@ -117,10 +132,26 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
             </div>
           ) : null}
 
-          <div className="flex justify-end">
+          {result && result.books.some((b) => !b.coverUrl) ? (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={autoFetchCovers}
+                onChange={(e) => setAutoFetchCovers(e.target.checked)}
+              />
+              Fetch missing covers automatically (via Open Library)
+            </label>
+          ) : null}
+
+          <div className="flex items-center justify-end gap-3">
+            {coverProgress ? (
+              <span className="text-xs text-[var(--color-ink-soft)]">
+                Fetching covers… {coverProgress.done}/{coverProgress.total}
+              </span>
+            ) : null}
             <button
               type="button"
-              disabled={!result || result.books.length === 0}
+              disabled={!result || result.books.length === 0 || coverProgress !== null}
               onClick={handleConfirmImport}
               className="rounded-full bg-[var(--color-accent)] px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >

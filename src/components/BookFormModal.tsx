@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { READING_STATUSES, type Book, type ReadingStatus } from '../types/book'
+import { lookupCoverUrl } from '../utils/coverLookup'
+import { BookCover } from './BookCover'
 import { StarRating } from './StarRating'
 
 interface BookFormModalProps {
@@ -23,9 +25,12 @@ const EMPTY_FORM = {
 const fieldClass =
   'rounded-lg border border-[var(--color-line)] bg-[var(--color-paper)] px-3 py-2 focus:border-[var(--color-accent)] focus:outline-none'
 
+type CoverLookupStatus = 'idle' | 'loading' | 'not-found' | 'error'
+
 export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModalProps) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [coverLookupStatus, setCoverLookupStatus] = useState<CoverLookupStatus>('idle')
 
   useEffect(() => {
     if (book) {
@@ -43,7 +48,24 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
       setForm(EMPTY_FORM)
     }
     setConfirmingDelete(false)
+    setCoverLookupStatus('idle')
   }, [book])
+
+  async function handleFetchCover() {
+    if (!form.title.trim()) return
+    setCoverLookupStatus('loading')
+    try {
+      const url = await lookupCoverUrl(form.title, form.author)
+      if (url) {
+        setForm((f) => ({ ...f, coverUrl: url }))
+        setCoverLookupStatus('idle')
+      } else {
+        setCoverLookupStatus('not-found')
+      }
+    } catch {
+      setCoverLookupStatus('error')
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -105,15 +127,49 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Cover image URL
-            <input
-              value={form.coverUrl}
-              onChange={(e) => setForm({ ...form, coverUrl: e.target.value })}
-              placeholder="https://…"
-              className={fieldClass}
-            />
-          </label>
+          <div className="flex flex-col gap-1 text-sm">
+            Cover image
+            <div className="flex gap-3">
+              <div className="h-24 w-16 shrink-0 overflow-hidden rounded-lg border border-[var(--color-line)]">
+                <BookCover
+                  id={book?.id ?? 'preview'}
+                  title={form.title || 'Untitled'}
+                  coverUrl={form.coverUrl || undefined}
+                  titleClassName="text-[9px] leading-tight"
+                />
+              </div>
+              <div className="flex flex-1 flex-col gap-2">
+                <input
+                  value={form.coverUrl}
+                  onChange={(e) => {
+                    setForm({ ...form, coverUrl: e.target.value })
+                    setCoverLookupStatus('idle')
+                  }}
+                  placeholder="https://… or fetch automatically"
+                  className={fieldClass}
+                />
+                <button
+                  type="button"
+                  onClick={handleFetchCover}
+                  disabled={!form.title.trim() || coverLookupStatus === 'loading'}
+                  className="self-start rounded-full border border-[var(--color-line)] px-3 py-1.5 text-xs font-semibold transition-colors hover:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {coverLookupStatus === 'loading' ? 'Searching…' : 'Fetch cover automatically'}
+                </button>
+                {coverLookupStatus === 'not-found' ? (
+                  <p className="text-xs text-[var(--color-ink-soft)]">
+                    No cover found for that title/author — paste a link instead, or leave it
+                    blank for a placeholder.
+                  </p>
+                ) : null}
+                {coverLookupStatus === 'error' ? (
+                  <p className="text-xs text-[var(--color-destructive)]">
+                    Couldn't reach the cover lookup service. Check your connection and try again.
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
             <label className="flex flex-col gap-1 text-sm">
