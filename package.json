@@ -1,8 +1,23 @@
 {
   "name": "kitaabghar",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "description": "A personal reading tracker with shelves, streaks, goals, and a Spotify-Wrapped-style year in review. All data stays local in your browser.",
+  "license": "MIT",
+  "author": "Ujjwal Gupta",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gupta-ujjwal/kitaabghar.git"
+  },
+  "homepage": "https://gupta-ujjwal.github.io/kitaabghar/",
+  "keywords": [
+    "reading-tracker",
+    "books",
+    "react",
+    "vite",
+    "tailwindcss"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
