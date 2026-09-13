@@ -173,7 +173,7 @@ function App() {
     <div className="min-h-screen">
       <Header view={view} onViewChange={setView} onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-8 pb-24 sm:pb-8">
         {view === 'home' && books.length === 0 ? (
           <EmptyLibrary onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
         ) : view === 'home' ? (
