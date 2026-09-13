@@ -12,5 +12,9 @@ export function useReadingGoal() {
     setGoal({ year: currentYear, target: Math.max(1, target) })
   }
 
-  return { goal, setTarget }
+  function resetGoal() {
+    setGoal({ year: currentYear, target: 24 })
+  }
+
+  return { goal, setTarget, resetGoal }
 }

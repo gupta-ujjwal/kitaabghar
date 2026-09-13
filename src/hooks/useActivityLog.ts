@@ -12,7 +12,11 @@ export function useActivityLog() {
     setDates((prev) => (prev.includes(today) ? prev : [...prev, today]))
   }
 
+  function clearActivity() {
+    setDates([])
+  }
+
   const streak = useMemo(() => computeStreak(dates), [dates])
 
-  return { streak, logActivity }
+  return { streak, logActivity, clearActivity }
 }

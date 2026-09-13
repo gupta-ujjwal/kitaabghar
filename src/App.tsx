@@ -8,19 +8,20 @@ import { Header } from './components/Header'
 import { EmptyLibrary } from './components/home/EmptyLibrary'
 import { HomeHero } from './components/home/HomeHero'
 import { ImportModal } from './components/ImportModal'
+import { ProfileView } from './components/ProfileView'
 import { WrappedView } from './components/WrappedView'
 import { useActivityLog } from './hooks/useActivityLog'
 import { useBooks } from './hooks/useBooks'
 import { useReadingGoal } from './hooks/useReadingGoal'
 import type { Book, ReadingStatus } from './types/book'
 
-type View = 'home' | 'library' | 'wrapped'
+type View = 'home' | 'library' | 'wrapped' | 'profile'
 type LibraryView = 'cards' | 'shelf'
 
 function App() {
-  const { books, addBook, updateBook, deleteBook, importBooks } = useBooks()
-  const { streak, logActivity } = useActivityLog()
-  const { goal, setTarget } = useReadingGoal()
+  const { books, addBook, updateBook, deleteBook, importBooks, clearBooks } = useBooks()
+  const { streak, logActivity, clearActivity } = useActivityLog()
+  const { goal, setTarget, resetGoal } = useReadingGoal()
 
   const [view, setView] = useState<View>('home')
   const [libraryView, setLibraryView] = useState<LibraryView>('cards')
@@ -150,6 +151,13 @@ function App() {
 
   const statusActions = { onStart: handleStart, onPause: handlePause, onResume: handleResume, onFinish: handleFinish }
 
+  function handleDeleteAll() {
+    clearBooks()
+    clearActivity()
+    resetGoal()
+    setView('home')
+  }
+
   return (
     <div className="min-h-screen">
       <Header view={view} onViewChange={setView} onAddBook={openAddModal} onImport={() => setImportModalOpen(true)} />
@@ -202,8 +210,10 @@ function App() {
               <BookShelfView books={filteredBooks} onSelectBook={openEditModal} />
             )}
           </>
-        ) : (
+        ) : view === 'wrapped' ? (
           <WrappedView books={books} streak={streak} />
+        ) : (
+          <ProfileView books={books} streak={streak} onDeleteAll={handleDeleteAll} />
         )}
       </main>
 

@@ -1,4 +1,4 @@
-type View = 'home' | 'library' | 'wrapped'
+type View = 'home' | 'library' | 'wrapped' | 'profile'
 
 interface HeaderProps {
   view: View
@@ -11,6 +11,7 @@ const TABS: { id: View; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'library', label: 'Library' },
   { id: 'wrapped', label: 'Wrapped' },
+  { id: 'profile', label: 'Profile' },
 ]
 
 export function Header({ view, onViewChange, onAddBook, onImport }: HeaderProps) {

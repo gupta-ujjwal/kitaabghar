@@ -30,5 +30,9 @@ export function useBooks() {
     setBooks((prev) => [...newBooks, ...prev])
   }
 
-  return { books, addBook, updateBook, deleteBook, importBooks }
+  function clearBooks() {
+    setBooks([])
+  }
+
+  return { books, addBook, updateBook, deleteBook, importBooks, clearBooks }
 }
