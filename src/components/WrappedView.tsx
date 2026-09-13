@@ -1,4 +1,5 @@
 import type { Book } from '../types/book'
+import type { Profile } from '../types/profile'
 import { computeAchievements } from '../utils/achievements'
 import type { StreakInfo } from '../utils/streak'
 import { AchievementsShelf } from './AchievementsShelf'
@@ -7,6 +8,7 @@ import { AnimatedNumber } from './ui/AnimatedNumber'
 import SplitText from './ui/SplitText'
 
 interface WrappedViewProps {
+  profile: Profile
   books: Book[]
   streak: StreakInfo
 }
@@ -50,7 +52,7 @@ function HighlightCard({
   )
 }
 
-export function WrappedView({ books, streak }: WrappedViewProps) {
+export function WrappedView({ profile, books, streak }: WrappedViewProps) {
   const currentYear = new Date().getFullYear()
   const readBooks = books.filter((b) => b.status === 'read')
   const readThisYear = readBooks.filter(
@@ -81,7 +83,7 @@ export function WrappedView({ books, streak }: WrappedViewProps) {
     <div className="flex flex-col gap-6">
       <div>
         <SplitText
-          text={`Your ${currentYear} Wrapped`}
+          text={`${profile.name ? `${profile.name}'s` : 'Your'} ${currentYear} Wrapped`}
           tag="h1"
           className="text-3xl font-bold sm:text-4xl"
           textAlign="left"

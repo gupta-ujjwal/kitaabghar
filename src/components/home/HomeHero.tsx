@@ -1,4 +1,5 @@
 import type { Book, StatusActions } from '../../types/book'
+import type { Profile } from '../../types/profile'
 import { BookCover } from '../BookCover'
 import { BookQuickActions } from '../BookQuickActions'
 import { TiltCard } from '../ui/TiltCard'
@@ -6,6 +7,7 @@ import { GoalRing } from './GoalRing'
 import { StreakFlame } from './StreakFlame'
 
 interface HomeHeroProps {
+  profile: Profile
   books: Book[]
   streakCurrent: number
   goalCompleted: number
@@ -27,6 +29,7 @@ function formatDate(iso: string): string {
 }
 
 export function HomeHero({
+  profile,
   books,
   streakCurrent,
   goalCompleted,
@@ -45,6 +48,8 @@ export function HomeHero({
 
   return (
     <div className="flex flex-col gap-6">
+      {profile.name ? <p className="text-sm text-[var(--color-ink-soft)]">Welcome back, {profile.name}.</p> : null}
+
       {hero ? (
         <TiltCard rotateAmplitude={3} scaleOnHover={1.005}>
           <div className="grid grid-cols-[76px_1fr] gap-4 rounded-3xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-4 shadow-[0_20px_40px_-28px_rgba(20,20,25,0.35)] sm:grid-cols-[112px_1fr] sm:gap-5 sm:p-6">
