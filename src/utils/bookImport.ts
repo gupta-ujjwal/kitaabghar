@@ -1,5 +1,6 @@
 import type { Book, ReadingStatus } from '../types/book'
 import { generateId } from './id'
+import { normalizeGenre } from './genre'
 
 const VALID_STATUSES: ReadingStatus[] = ['want-to-read', 'reading', 'paused', 'read']
 
@@ -67,12 +68,14 @@ export function parseImportFile(raw: unknown): ImportResult {
       pages = n
     }
 
+    const genre = isNonEmptyString(candidate.genre) ? normalizeGenre(candidate.genre) : ''
+
     books.push({
       id: generateId(),
       title: candidate.title.trim(),
       author: candidate.author.trim(),
       coverUrl: isNonEmptyString(candidate.coverUrl) ? candidate.coverUrl : undefined,
-      genre: isNonEmptyString(candidate.genre) ? candidate.genre : undefined,
+      genre: genre || undefined,
       status,
       rating,
       pages,
