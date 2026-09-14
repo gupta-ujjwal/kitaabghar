@@ -95,7 +95,7 @@ export function Header({ view, onViewChange, onAddBook, onImport }: HeaderProps)
       </header>
 
       <nav
-        className="fixed inset-x-0 bottom-0 border-t border-[var(--color-line)] bg-[var(--color-paper-raised)] sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-line)] bg-[var(--color-paper-raised)] sm:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="grid grid-cols-3 py-2">

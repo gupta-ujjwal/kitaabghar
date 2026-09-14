@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { IMPORT_OPENAPI_SCHEMA, IMPORT_SAMPLE } from '../data/importSchema'
+import { useModalDismiss } from '../hooks/useModalDismiss'
 import type { Book } from '../types/book'
 import { parseImportFile, type ImportResult } from '../utils/bookImport'
 import { fillMissingCovers } from '../utils/coverLookup'
@@ -16,6 +17,8 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
   const [autoFetchCovers, setAutoFetchCovers] = useState(true)
   const [coverProgress, setCoverProgress] = useState<{ done: number; total: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useModalDismiss(onClose)
 
   function handleParse(raw: string) {
     setText(raw)
