@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useModalDismiss } from '../hooks/useModalDismiss'
 import { READING_STATUSES, type Book, type ReadingStatus } from '../types/book'
 import { lookupCoverUrl } from '../utils/coverLookup'
+import { normalizeGenre } from '../utils/genre'
 import { BookCover } from './BookCover'
 import { StarRating } from './StarRating'
 
@@ -78,7 +79,7 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
       title: form.title.trim(),
       author: form.author.trim(),
       coverUrl: form.coverUrl.trim() || undefined,
-      genre: form.genre.trim() || undefined,
+      genre: normalizeGenre(form.genre) || undefined,
       status: form.status,
       rating: form.status === 'read' && form.rating > 0 ? form.rating : undefined,
       pages: form.pages,

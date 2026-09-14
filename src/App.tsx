@@ -15,6 +15,7 @@ import { useBooks } from './hooks/useBooks'
 import { useProfile } from './hooks/useProfile'
 import { useReadingGoal } from './hooks/useReadingGoal'
 import type { Book, ReadingStatus } from './types/book'
+import { dedupeGenres, normalizeGenre } from './utils/genre'
 
 type View = 'home' | 'library' | 'wrapped' | 'profile'
 type LibraryView = 'cards' | 'shelf'
@@ -49,7 +50,7 @@ function App() {
   )
 
   const genres = useMemo(
-    () => Array.from(new Set(books.map((b) => b.genre).filter(Boolean))) as string[],
+    () => dedupeGenres(books.map((b) => b.genre).filter((g): g is string => Boolean(g))),
     [books],
   )
 
@@ -61,7 +62,9 @@ function App() {
         book.title.toLowerCase().includes(query) ||
         book.author.toLowerCase().includes(query)
       const matchesStatus = statusFilter === 'all' || book.status === statusFilter
-      const matchesGenre = genreFilter === 'all' || book.genre === genreFilter
+      const matchesGenre =
+        genreFilter === 'all' ||
+        normalizeGenre(book.genre ?? '').toLowerCase() === genreFilter.toLowerCase()
       return matchesSearch && matchesStatus && matchesGenre
     })
   }, [books, search, statusFilter, genreFilter])
