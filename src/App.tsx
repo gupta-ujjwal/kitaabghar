@@ -252,6 +252,7 @@ function App() {
       {modalOpen ? (
         <BookFormModal
           book={editingBook}
+          books={books}
           onSave={handleSave}
           onDelete={handleDelete}
           onClose={closeModal}
