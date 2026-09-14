@@ -138,8 +138,9 @@ export function HomeHero({
                     <BookCover id={book.id} title={book.title} coverUrl={book.coverUrl} eager />
                   </div>
                   <p className="mt-2 truncate text-sm font-semibold">{book.title}</p>
-                  <p className="truncate text-xs text-[var(--color-ink-soft)]">
-                    {book.author} · {shelfStatusLabel(book)}
+                  <p className="flex text-xs text-[var(--color-ink-soft)]">
+                    <span className="min-w-0 truncate">{book.author}</span>
+                    <span className="shrink-0">&nbsp;·&nbsp;{shelfStatusLabel(book)}</span>
                   </p>
                 </button>
                 <BookQuickActions
