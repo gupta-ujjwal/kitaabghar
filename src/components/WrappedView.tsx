@@ -121,7 +121,7 @@ export function WrappedView({ profile, books, streak }: WrappedViewProps) {
       )}
 
       <div className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] p-5">
-        <h3 className="mb-4 text-lg font-semibold">Books by Genre</h3>
+        <h2 className="mb-4 text-lg font-semibold">Books by Genre</h2>
         {sortedGenres.length === 0 ? (
           <p className="text-sm text-[var(--color-ink-soft)]">
             Add some books to see a breakdown.
