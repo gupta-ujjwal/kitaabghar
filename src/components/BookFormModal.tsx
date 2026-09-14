@@ -8,6 +8,7 @@ import { StarRating } from './StarRating'
 
 interface BookFormModalProps {
   book: Book | null // null = creating a new book
+  books: Book[]
   onSave: (book: Omit<Book, 'id' | 'dateAdded'>) => void
   onDelete: (id: string) => void
   onClose: () => void
@@ -29,10 +30,11 @@ const fieldClass =
 
 type CoverLookupStatus = 'idle' | 'loading' | 'not-found' | 'error'
 
-export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModalProps) {
+export function BookFormModal({ book, books, onSave, onDelete, onClose }: BookFormModalProps) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [coverLookupStatus, setCoverLookupStatus] = useState<CoverLookupStatus>('idle')
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   useModalDismiss(onClose)
 
@@ -53,7 +55,18 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
     }
     setConfirmingDelete(false)
     setCoverLookupStatus('idle')
+    setValidationError(null)
   }, [book])
+
+  const isDuplicate =
+    !book &&
+    form.title.trim() !== '' &&
+    form.author.trim() !== '' &&
+    books.some(
+      (b) =>
+        b.title.trim().toLowerCase() === form.title.trim().toLowerCase() &&
+        b.author.trim().toLowerCase() === form.author.trim().toLowerCase(),
+    )
 
   async function handleFetchCover() {
     if (!form.title.trim()) return
@@ -73,7 +86,10 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.title.trim() || !form.author.trim()) return
+    if (!form.title.trim() || !form.author.trim()) {
+      setValidationError('Title and author are required.')
+      return
+    }
 
     onSave({
       title: form.title.trim(),
@@ -130,6 +146,12 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               className={fieldClass}
             />
           </label>
+
+          {isDuplicate ? (
+            <p className="-mt-1 text-xs text-[var(--color-amber)]">
+              You already have this book in your library.
+            </p>
+          ) : null}
 
           <div className="flex flex-col gap-1 text-sm">
             Cover image
@@ -238,6 +260,10 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
               className={`resize-none ${fieldClass}`}
             />
           </label>
+
+          {validationError ? (
+            <p className="text-sm text-[var(--color-destructive)]">{validationError}</p>
+          ) : null}
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-line)] pt-4">
             {book ? (
