@@ -7,18 +7,31 @@ import { fillMissingCovers } from '../utils/coverLookup'
 import { downloadJson } from '../utils/download'
 
 interface ImportModalProps {
+  books: Book[]
   onImport: (books: Book[]) => void
   onClose: () => void
 }
 
-export function ImportModal({ onImport, onClose }: ImportModalProps) {
+export function ImportModal({ books, onImport, onClose }: ImportModalProps) {
   const [text, setText] = useState('')
   const [result, setResult] = useState<ImportResult | null>(null)
   const [autoFetchCovers, setAutoFetchCovers] = useState(true)
   const [coverProgress, setCoverProgress] = useState<{ done: number; total: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useModalDismiss(onClose)
+  const duplicateCount = result
+    ? result.books.filter((nb) =>
+        books.some(
+          (existing) =>
+            existing.title.trim().toLowerCase() === nb.title.trim().toLowerCase() &&
+            existing.author.trim().toLowerCase() === nb.author.trim().toLowerCase(),
+        ),
+      ).length
+    : 0
+
+  useModalDismiss(() => {
+    if (coverProgress === null) onClose()
+  })
 
   function handleParse(raw: string) {
     setText(raw)
@@ -61,7 +74,9 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-ink)]/40 p-4 backdrop-blur-[2px]"
-      onClick={onClose}
+      onClick={() => {
+        if (coverProgress === null) onClose()
+      }}
     >
       <div
         className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-raised)] shadow-[0_20px_50px_rgba(20,20,25,0.25)]"
@@ -72,7 +87,8 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
+            disabled={coverProgress !== null}
+            className="text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Close"
           >
             ✕
@@ -125,6 +141,11 @@ export function ImportModal({ onImport, onClose }: ImportModalProps) {
                 {result.books.length} book{result.books.length === 1 ? '' : 's'} ready to import
                 {result.errors.length > 0 ? `, ${result.errors.length} skipped` : ''}
               </p>
+              {duplicateCount > 0 ? (
+                <p className="mt-1 text-xs text-[var(--color-ink-soft)]">
+                  {duplicateCount} already in your library
+                </p>
+              ) : null}
               {result.errors.length > 0 ? (
                 <ul className="mt-2 flex flex-col gap-1 text-xs text-[var(--color-destructive)]">
                   {result.errors.map((err, i) => (

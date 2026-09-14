@@ -260,7 +260,7 @@ function App() {
       ) : null}
 
       {importModalOpen ? (
-        <ImportModal onImport={handleImport} onClose={() => setImportModalOpen(false)} />
+        <ImportModal books={books} onImport={handleImport} onClose={() => setImportModalOpen(false)} />
       ) : null}
 
       {celebrating ? <Confetti /> : null}
