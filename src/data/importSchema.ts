@@ -65,3 +65,18 @@ export const IMPORT_SAMPLE = [
     dateFinished: '2026-01-20',
   },
 ]
+
+export const AI_IMPORT_PROMPT = `Convert my reading list into a JSON array for Kitaabghar's bulk import.
+
+Match this OpenAPI schema exactly (I'm attaching/pasting it below this prompt): only "title" and "author" are required; "status" must be one of want-to-read / reading / paused / read (default want-to-read); "genre", "pages", "rating" (1-5, only when status is "read"), "notes", "dateStarted", "dateFinished" (YYYY-MM-DD) are optional.
+
+For each book, also look up a real cover image and include it as "coverUrl":
+1. Try Google Books first: https://www.googleapis.com/books/v1/volumes?q=intitle:TITLE+inauthor:AUTHOR — use volumeInfo.imageLinks.thumbnail if present.
+2. If Google Books has no cover, try Open Library: https://openlibrary.org/search.json?title=TITLE&author=AUTHOR — take the first result's cover_i and build https://covers.openlibrary.org/b/id/COVER_ID-L.jpg.
+3. If neither has a cover, just omit "coverUrl" — Kitaabghar can fetch one automatically on import.
+
+Output ONLY the raw JSON array — no explanation, no markdown code fences.
+
+My books:
+- [Title] by [Author]
+- [Title] by [Author]`
