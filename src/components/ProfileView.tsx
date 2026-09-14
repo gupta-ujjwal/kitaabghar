@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useModalDismiss } from '../hooks/useModalDismiss'
 import type { Book } from '../types/book'
 import type { Profile } from '../types/profile'
 import { downloadJson } from '../utils/download'
@@ -32,6 +33,8 @@ const CONFIRM_PHRASE = 'DELETE'
 export function ProfileView({ profile, onUpdateProfile, books, streak, onDeleteAll }: ProfileViewProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmText, setConfirmText] = useState('')
+
+  useModalDismiss(() => setConfirmOpen(false), confirmOpen)
 
   const [name, setName] = useState(profile.name)
   const [favoriteGenre, setFavoriteGenre] = useState(profile.favoriteGenre ?? '')

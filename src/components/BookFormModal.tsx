@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useModalDismiss } from '../hooks/useModalDismiss'
 import { READING_STATUSES, type Book, type ReadingStatus } from '../types/book'
 import { lookupCoverUrl } from '../utils/coverLookup'
 import { BookCover } from './BookCover'
@@ -31,6 +32,8 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
   const [form, setForm] = useState(EMPTY_FORM)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [coverLookupStatus, setCoverLookupStatus] = useState<CoverLookupStatus>('idle')
+
+  useModalDismiss(onClose)
 
   useEffect(() => {
     if (book) {
@@ -235,10 +238,10 @@ export function BookFormModal({ book, onSave, onDelete, onClose }: BookFormModal
             />
           </label>
 
-          <div className="mt-2 flex items-center justify-between gap-3 border-t border-[var(--color-line)] pt-4">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-line)] pt-4">
             {book ? (
               confirmingDelete ? (
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="text-[var(--color-ink-soft)]">Delete this book?</span>
                   <button
                     type="button"
